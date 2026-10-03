@@ -6,8 +6,8 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 // Change the initial rotation below! (Values in DEGREES: 0, 90, 180, 270)
 // =========================================================================
 export const CACTUS_CONFIG = {
-  // Change initial Y rotation here! (e.g. 0 = front, 90 = side, 180 = back)
-  initialRotationDegrees: 45,
+  // Change initial Y rotation here! (e.g. 0 = front, 90 = front for glTF, 180 = back)
+  initialRotationDegrees: 90,
 
   // Model scale factor for GLB files
   modelScale: 4.2,
@@ -54,7 +54,7 @@ export class CactusCharacter {
     this.targetScale = new THREE.Vector3(1, 1, 1);
 
     // Interactive user rotation offset
-    this.userRotationY = this.initialRotationY;
+    this.userRotationY = 0;
 
     // Dynamic state variables
     this.blinkFactor = 0;
