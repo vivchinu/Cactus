@@ -69,8 +69,10 @@ export class CactusCharacter {
     this.buildCharacter();
     this.scene.add(this.rootGroup);
 
-    // 2. Attempt to Load Custom GLB Model from /cactus.glb
-    this.loadGLTFModel('/cactus.glb');
+    // 2. Attempt to Load Custom GLB Model from relative path
+    const baseUrl = import.meta.env.BASE_URL || './';
+    const glbUrl = `${baseUrl.endsWith('/') ? baseUrl : baseUrl + '/'}cactus.glb`;
+    this.loadGLTFModel(glbUrl);
   }
 
   initMaterials() {
