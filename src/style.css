@@ -1,0 +1,734 @@
+/* ==========================================================================
+   Talking Cactus — Cartoon 3D Stylized UI System
+   Matching the high-fidelity target reference screenshot
+   ========================================================================== */
+
+:root {
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-playful: 'Fredoka', cursive, sans-serif;
+  --font-handwritten: 'Caveat', cursive;
+
+  /* Lush Green Warm Backdrop Palette */
+  --bg-gradient-top: #4da674;
+  --bg-gradient-mid: #388a5d;
+  --bg-gradient-bottom: #2d734c;
+
+  /* Accent Colors */
+  --mic-red: #f33f62;
+  --mic-red-hover: #e02d50;
+  --mic-glow: rgba(243, 63, 98, 0.5);
+
+  --btn-green-translucent: rgba(58, 107, 72, 0.65);
+  --btn-green-hover: rgba(72, 130, 89, 0.85);
+
+  --text-white: #ffffff;
+  --text-dark: #232824;
+
+  --bubble-bg: #fffef7;
+  --shadow-soft: 0 16px 40px rgba(18, 48, 28, 0.25);
+
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-main);
+  background: radial-gradient(circle at 50% 30%, var(--bg-gradient-top) 0%, var(--bg-gradient-mid) 55%, var(--bg-gradient-bottom) 100%);
+  color: var(--text-white);
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* Mobile Frame Container (Simulating iPhone Portrait 9:16) */
+.mobile-frame-container {
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  max-height: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border-radius: 44px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 70px rgba(12, 35, 20, 0.35);
+}
+
+/* Top Header Bar */
+.top-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 18px 24px 10px 24px;
+  pointer-events: none;
+}
+
+.help-btn-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+
+/* Hand-drawn "How to play?" Annotation */
+.annotation-text {
+  position: absolute;
+  right: 52px;
+  top: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.annotation-text span {
+  font-family: var(--font-handwritten);
+  font-size: 21px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(-5deg);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.curved-arrow {
+  width: 30px;
+  height: 22px;
+  margin-top: -3px;
+  margin-right: -4px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.icon-btn-help {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: var(--text-white);
+  font-family: var(--font-playful);
+  font-weight: 700;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.icon-btn-help:active {
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* 3D Canvas Container */
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#cactusCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Speech Bubble (Exact Match to Reference Screenshot) */
+.speech-bubble {
+  position: absolute;
+  top: 14%;
+  left: 10%;
+  z-index: 25;
+  background: var(--bubble-bg);
+  padding: 16px 26px;
+  border-radius: 32px;
+  box-shadow: var(--shadow-soft), 0 0 0 1px rgba(255, 255, 255, 0.9);
+  max-width: 68%;
+  text-align: center;
+  transition: transform 0.35s var(--transition-bounce), opacity 0.25s ease;
+  transform-origin: bottom left;
+}
+
+.speech-bubble.hidden {
+  opacity: 0;
+  transform: scale(0.6) translateY(20px);
+  pointer-events: none;
+}
+
+.speech-bubble p {
+  font-family: var(--font-playful);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.25;
+  color: var(--text-dark);
+  word-wrap: break-word;
+}
+
+.bubble-tail {
+  position: absolute;
+  bottom: -12px;
+  right: 28%;
+  width: 22px;
+  height: 22px;
+  background: var(--bubble-bg);
+  clip-path: polygon(0 0, 100% 0, 20% 100%);
+}
+
+/* Burst FX Overlay */
+.fx-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Quick Phrases Horizontal Chips Bar */
+.quick-phrases-bar {
+  position: absolute;
+  bottom: 142px;
+  left: 0;
+  right: 0;
+  z-index: 28;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.quick-phrases-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.phrase-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-white);
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.phrase-chip:active {
+  transform: scale(0.94);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Voice Picker Dropdown Modal */
+.voice-picker-dropdown {
+  position: absolute;
+  bottom: 135px;
+  right: 20px;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 14px;
+  width: 210px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform 0.25s var(--transition-bounce), opacity 0.2s ease;
+}
+
+.voice-picker-dropdown.hidden {
+  opacity: 0;
+  transform: scale(0.8) translateY(10px);
+  pointer-events: none;
+}
+
+.dropdown-header {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #666;
+  padding: 2px 6px 6px 6px;
+}
+
+.voice-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.voice-option span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.voice-option small {
+  font-size: 10px;
+  color: #777;
+}
+
+.voice-option:hover, .voice-option.active {
+  background: rgba(84, 195, 141, 0.2);
+}
+
+/* Bottom Controls Section (Matching Reference Image) */
+.bottom-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 0 16px 36px 16px;
+}
+
+/* Side Action Buttons (SOUND & VOICE FX) */
+.side-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.round-action-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--btn-green-translucent);
+  backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: var(--text-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(12, 35, 20, 0.2);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.round-action-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.round-action-btn:hover {
+  background: var(--btn-green-hover);
+}
+
+.round-action-btn:active {
+  transform: scale(0.92);
+}
+
+.btn-caption {
+  font-family: var(--font-playful);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Central Microphone Button & Glowing Ring */
+.mic-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mic-glow-ring {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* Decorative Accent Pulse Dashes around Mic Ring */
+.dash {
+  position: absolute;
+  width: 8px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 2px;
+}
+
+.dash-tl { top: 6px; left: 14px; transform: rotate(-35deg); }
+.dash-tr { top: 6px; right: 14px; transform: rotate(35deg); }
+.dash-bl { bottom: 6px; left: 14px; transform: rotate(35deg); }
+.dash-br { bottom: 6px; right: 14px; transform: rotate(-35deg); }
+
+.mic-btn-main {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff4d6d 0%, #e63054 100%);
+  color: var(--text-white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 25px var(--mic-glow), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  transition: transform 0.25s var(--transition-bounce), background 0.3s ease;
+  z-index: 2;
+}
+
+.mic-btn-main:hover {
+  transform: scale(1.05);
+}
+
+.mic-btn-main:active {
+  transform: scale(0.93);
+}
+
+.mic-section.recording .mic-glow-ring {
+  background: rgba(243, 63, 98, 0.25);
+  border-color: rgba(243, 63, 98, 0.6);
+  animation: ringPulse 1.2s infinite ease-out;
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.mic-section.recording .mic-btn-main {
+  animation: micPulse 0.8s infinite alternate;
+}
+
+@keyframes micPulse {
+  0% { transform: scale(0.95); }
+  100% { transform: scale(1.06); }
+}
+
+.mic-icon {
+  width: 32px;
+  height: 32px;
+  stroke: var(--text-white);
+}
+
+.stop-square {
+  width: 20px;
+  height: 20px;
+  background: var(--text-white);
+  border-radius: 4px;
+}
+
+.stop-square.hidden, .mic-icon.hidden {
+  display: none;
+}
+
+/* Status Action Pill below Mic ("TAP TO TALK") */
+.status-pill-caption {
+  padding: 6px 18px;
+  border-radius: 20px;
+  background: rgba(30, 48, 35, 0.55);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: var(--font-playful);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-white);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Text Input Keyboard Drawer */
+.text-input-drawer {
+  position: absolute;
+  bottom: 140px;
+  left: 20px;
+  right: 20px;
+  z-index: 35;
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px;
+  border-radius: 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+.text-input-drawer.hidden {
+  display: none;
+}
+
+.text-input-drawer input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-family: var(--font-main);
+  font-size: 13px;
+  outline: none;
+  color: var(--text-dark);
+}
+
+.send-btn {
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: var(--bg-gradient-bottom);
+  color: var(--text-white);
+  border: none;
+  font-family: var(--font-playful);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Help Modal Overlay */
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  background: rgba(18, 38, 24, 0.55);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-backdrop.hidden {
+  display: none;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 340px;
+  background: #ffffff;
+  border-radius: 32px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--text-dark);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h2 {
+  font-family: var(--font-playful);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.close-x {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #888;
+  cursor: pointer;
+}
+
+.help-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.step-icon {
+  font-size: 24px;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(84, 195, 141, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.step-info strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.step-info p {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.35;
+}
+
+.modal-footer-note {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2b7a51;
+  background: rgba(84, 195, 141, 0.15);
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+
+.btn-got-it {
+  width: 100%;
+  padding: 14px;
+  border-radius: 18px;
+  background: #232824;
+  color: var(--text-white);
+  border: none;
+  font-family: var(--font-playful);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Animated Splash Loading Screen Overlay */
+.splash-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: radial-gradient(circle at 50% 40%, #4da674 0%, #2d734c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  transform: scale(1.15);
+  pointer-events: none;
+}
+
+.splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.splash-cactus-icon {
+  font-size: 72px;
+  animation: splashBounce 1.4s infinite ease-in-out;
+}
+
+@keyframes splashBounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-16px) scale(1.08) rotate(4deg); }
+}
+
+.splash-title {
+  font-family: var(--font-playful);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: -0.5px;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.splash-subtitle {
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 8px;
+}
+
+.splash-loader-bar {
+  width: 200px;
+  height: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.splash-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ffd347 0%, #ff66a7 100%);
+  border-radius: 10px;
+  transition: width 0.3s ease-out;
+}
+
+/* Mobile Full Viewport */
+@media (max-width: 520px) {
+  .mobile-frame-container {
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+  .mobile-card {
+    border-radius: 0;
+  }
+}

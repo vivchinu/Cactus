@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Talking Cactus</string>
+    <string name="title_activity_main">Talking Cactus</string>
+    <string name="package_name">com.talkingcactus.app</string>
+    <string name="custom_url_scheme">com.talkingcactus.app</string>
+</resources>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Talking Cactus — Playful 3D Voice Experience</title>
+    <meta name="description" content="Talk to the funny 3D cactus! Repeats everything you say in a hilarious pitch-shifted voice with cute 3D animations." />
+    <!-- Google Fonts: Fredoka (playful cartoon font) + Plus Jakarta Sans + Caveat (hand-drawn script) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-root">
+      
+      <!-- Mobile Viewport Frame -->
+      <div class="mobile-frame-container">
+        
+        <div class="mobile-card" id="mobileCard">
+          
+          <!-- Animated Splash / Loading Screen -->
+          <div id="splashScreen" class="splash-screen">
+            <div class="splash-content">
+              <div class="splash-cactus-icon">🌵</div>
+              <h1 class="splash-title">talking.cactus</h1>
+              <p class="splash-subtitle">Waking up Cactus...</p>
+              <div class="splash-loader-bar">
+                <div id="splashProgress" class="splash-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Top Header Navigation -->
+          <header class="top-header">
+            
+            <!-- Help Button with hand-drawn annotation -->
+            <div class="help-btn-wrapper">
+              <div class="annotation-text">
+                <span>How to play?</span>
+                <svg class="curved-arrow" viewBox="0 0 40 30" fill="none">
+                  <path d="M 5 25 Q 25 28 32 10" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                  <path d="M 26 14 L 32 10 L 34 17" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </div>
+              <button id="helpBtn" class="icon-btn-help" title="How to play?" aria-label="Help">?</button>
+            </div>
+          </header>
+
+          <!-- 3D Canvas Area -->
+          <main class="canvas-wrapper">
+            <canvas id="cactusCanvas"></canvas>
+
+            <!-- Playful Speech Bubble -->
+            <div id="speechBubble" class="speech-bubble">
+              <p id="speechBubbleText">Say something!</p>
+              <div class="bubble-tail"></div>
+            </div>
+
+            <!-- Reaction Emoji / Burst FX -->
+            <div id="fxOverlay" class="fx-overlay"></div>
+          </main>
+
+          <!-- Voice FX Selector Popup Modal / Dropdown -->
+          <div id="voicePickerDropdown" class="voice-picker-dropdown hidden">
+            <div class="dropdown-header">Voice Pitch Filter</div>
+            <button class="voice-option active" data-pitch="1.45" data-icon="🐿️">
+              <span>🐿️ High Chipmunk</span>
+              <small>Funny squeaky cactus</small>
+            </button>
+            <button class="voice-option" data-pitch="1.75" data-icon="🎈">
+              <span>🎈 Helium Squeak</span>
+              <small>Super high squeak</small>
+            </button>
+            <button class="voice-option" data-pitch="0.75" data-icon="🧟">
+              <span>🧟 Deep Monster</span>
+              <small>Funny low rumble</small>
+            </button>
+            <button class="voice-option" data-pitch="1.0" data-icon="🗣️">
+              <span>🗣️ Normal Voice</span>
+              <small>Natural voice pitch</small>
+            </button>
+          </div>
+
+          <!-- Bottom Control Interface (Matching reference screenshot exactly) -->
+          <footer class="bottom-controls">
+            
+            <!-- Left Sound FX Toggle Button -->
+            <div class="side-btn-container">
+              <button id="soundToggleBtn" class="round-action-btn" title="Toggle Sound">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+              </button>
+              <span class="btn-caption">SOUND</span>
+            </div>
+
+            <!-- Central Microphone Button & Ring Accent -->
+            <div class="mic-section">
+              <div class="mic-glow-ring" id="micGlowRing">
+                <!-- Decorative pulse dashes -->
+                <span class="dash dash-tl"></span>
+                <span class="dash dash-tr"></span>
+                <span class="dash dash-bl"></span>
+                <span class="dash dash-br"></span>
+                
+                <button id="micBtn" class="mic-btn-main" aria-label="Tap to talk">
+                  <svg id="micSvg" class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="22"></line>
+                  </svg>
+                  <div id="stopSquare" class="stop-square hidden"></div>
+                </button>
+              </div>
+
+              <!-- Action Status Label Pill -->
+              <div id="statusPill" class="status-pill-caption">
+                <span id="statusText">TAP TO TALK</span>
+              </div>
+            </div>
+
+            <!-- Right Voice FX Button -->
+            <div class="side-btn-container">
+              <button id="voiceFxBtn" class="round-action-btn" title="Voice FX">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2l2.4 5.4 5.6.8-4 4.1 1 5.7-5-2.8-5 2.8 1-5.7-4-4.1 5.6-.8z"></path>
+                </svg>
+              </button>
+              <span class="btn-caption">VOICE FX</span>
+            </div>
+
+          </footer>
+
+          <!-- Hidden Text Input Keyboard Drawer -->
+          <div id="textInputDrawer" class="text-input-drawer hidden">
+            <input type="text" id="customTextInput" placeholder="Type something funny..." maxlength="120" />
+            <button id="sendTextBtn" class="send-btn">Speak</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Help Modal Overlay -->
+      <div id="helpModal" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h2>How to play 🌵</h2>
+            <button id="closeHelpModalX" class="close-x">&times;</button>
+          </div>
+
+          <div class="help-steps">
+            <div class="step-item">
+              <div class="step-icon">🎙️</div>
+              <div class="step-info">
+                <strong>1. Tap the microphone</strong>
+                <p>Press the bright pink button at the bottom of the screen.</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-icon">🗣️</div>
+              <div class="step-info">
+                <strong>2. Say anything</strong>
+                <p>Speak funny words or sentences out loud!</p>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <div class="step-icon">🌵</div>
+              <div class="step-info">
+                <strong>3. Watch the cactus repeat you</strong>
+                <p>The cactus repeats your exact words in a high hilarious pitch with wild cartoon dance moves!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer-note">
+            "That's it! Try saying something funny."
+          </div>
+
+          <button id="closeHelpModalBtn" class="btn-got-it">Got It!</button>
+        </div>
+      </div>
+
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
