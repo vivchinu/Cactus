@@ -336,7 +336,10 @@ class TalkingCactusApp {
         this.animManager.setState(STATES.LISTENING);
         this.updateUIForListening();
       } catch (err) {
-        this.statusText.textContent = 'Mic permission denied!';
+        console.warn('Microphone access denied:', err);
+        this.statusText.textContent = 'Mic access needed!';
+        this.showSpeechBubble('Please allow microphone access to talk with me! 🎙️');
+        setTimeout(() => this.hideSpeechBubble(), 4500);
       }
     }
   }
