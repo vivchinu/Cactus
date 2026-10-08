@@ -106,7 +106,7 @@ class TalkingCactusApp {
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
     // Warm Studio Lighting
     const ambientLight = new THREE.AmbientLight(0xfff5ea, 0.75);

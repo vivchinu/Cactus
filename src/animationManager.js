@@ -71,6 +71,36 @@ export class AnimationManager {
     }
   }
 
+  triggerVisualEffects(type) {
+    if (!this.fxOverlayEl) return;
+
+    const emojis = {
+      jump: '🚀',
+      wiggle: '💃',
+      lean: '🙃',
+      spin: '💫',
+      fall: '💥',
+      proud: '🌟',
+    };
+    const emoji = emojis[type] || '🎉';
+
+    const el = document.createElement('div');
+    el.className = 'tap-emoji-pop';
+    el.textContent = emoji;
+    el.style.cssText = `
+      position: fixed;
+      left: 50%;
+      top: 40%;
+      transform: translate(-50%, -50%);
+      font-size: 56px;
+      animation: tapEmojiFloat 0.9s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+      pointer-events: none;
+      z-index: 150;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  }
+
   getRandomReactionType() {
     const reactions = ['jump', 'wiggle', 'lean', 'spin', 'fall', 'proud'];
     return reactions[Math.floor(Math.random() * reactions.length)];
